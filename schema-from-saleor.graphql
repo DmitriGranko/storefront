@@ -1,0 +1,158 @@
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+"""Groups fields and operations into named groups."""
+directive @doc(
+  """Name of the grouping category"""
+  category: String!
+) on ENUM | FIELD | FIELD_DEFINITION | INPUT_OBJECT | OBJECT | INTERFACE
+
+"""Webhook events triggered by a specific location."""
+directive @webhookEventsInfo(
+  """List of asynchronous webhook events triggered by a specific location."""
+  asyncEvents: [WebhookEventTypeAsyncEnum!]!
+
+  """List of synchronous webhook events triggered by a specific location."""
+  syncEvents: [WebhookEventTypeSyncEnum!]!
+) on FIELD | FIELD_DEFINITION | INPUT_OBJECT | OBJECT
+
+type Query {
+  """
+  Look up a webhook by ID. Requires one of the following permissions: MANAGE_APPS, OWNER.
+  """
+  webhook(
+    """ID of the webhook."""
+    id: ID!
+  ): Webhook @doc(category: "Webhooks")
+
+  """
+  List of all available webhook events.
+  
+  Requires one of the following permissions: MANAGE_APPS.
+  """
+  webhookEvents: [WebhookEvent!] @doc(category: "Webhooks") @deprecated(reason: "Use `WebhookEventTypeAsyncEnum` and `WebhookEventTypeSyncEnum` to get available event types.")
+
+  """
+  Retrieve a sample payload for a given webhook event based on real data. It can be useful for some integrations where sample payload is required.
+  """
+  webhookSamplePayload(
+    """Name of the requested event type."""
+    eventType: WebhookSampleEventTypeEnum!
+  ): JSONString @doc(category: "Webhooks")
+
+  """
+  Look up a warehouse by ID.
+  
+  Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS, MANAGE_SHIPPING.
+  """
+  warehouse(
+    """ID of a warehouse."""
+    id: ID
+
+    """External ID of a warehouse."""
+    externalReference: String
+  ): Warehouse @doc(category: "Products")
+
+  """
+  List of warehouses.
+  
+  Requires one of the following permissions: MANAGE_PRODUCTS, MANAGE_ORDERS, MANAGE_SHIPPING.
+  """
+  warehouses(
+    filter: WarehouseFilterInput
+    sortBy: WarehouseSortingInput
+
+    """Return the elements in the list that come before the specified cursor."""
+    before: String
+
+    """Return the elements in the list that come after the specified cursor."""
+    after: String
+
+    """
+    Retrieve the first n elements from the list. Note that the system only allows fetching a maximum of 100 objects in a single query.
+    """
+    first: Int
+
+    """
+    Retrieve the last n elements from the list. Note that the system only allows fetching a maximum of 100 objects in a single query.
+    """
+    last: Int
+  ): WarehouseCountableConnection @doc(category: "Products")
+
+  """
+  Returns a list of all translatable items of a given kind.
+  
+  Requires one of the following permissions: MANAGE_TRANSLATIONS.
+  """
+  translations(
+    """Kind of objects to retrieve."""
+    kind: TranslatableKinds!
+
+    """Return the elements in the list that come before the specified cursor."""
+    before: String
+
+    """Return the elements in the list that come after the specified cursor."""
+    after: String
+
+    """
+    Retrieve the first n elements from the list. Note that the system only allows fetching a maximum of 100 objects in a single query.
+    """
+    first: Int
+
+    """
+    Retrieve the last n elements from the list. Note that the system only allows fetching a maximum of 100 objects in a single query.
+    """
+    last: Int
+  ): TranslatableItemConnection
+
+  """
+  Lookup a translatable item by ID.
+  
+  Requires one of the following permissions: MANAGE_TRANSLATIONS.
+  """
+  translation(
+    """ID of the object to retrieve."""
+    id: ID!
+
+    """Kind of the object to retrieve."""
+    kind: TranslatableKinds!
+  ): TranslatableItem
+
+  """
+  Look up a tax configuration.
+  
+  Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
+  """
+  taxConfiguration(
+    """ID of a tax configuration."""
+    id: ID!
+  ): TaxConfiguration @doc(category: "Taxes")
+
+  """
+  List of tax configurations.
+  
+  Requires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.
+  """
+  taxConfigurations(
+    """Filtering options for tax configurations."""
+    filter: TaxConfigurationFilterInput
+
+    """Return the elements in the list that come before the specified cursor."""
+    before: String
+
+    """Return the elements in the list that come after the specified cursor."""
+    after: String
+
+    """
+    Retrieve the first n elements from the list. Note that the system only allows fetching a maximum of 100 objects in a single query.
+    """
+    first: Int
+
+    """
+    Retrieve the last n elements from the list. Note that the system only allows fetching a maximum of 100 objects in a single query.
+    """
+    last: Int
+  ): TaxConfigurationCountableConnection @doc(category: "Taxes")

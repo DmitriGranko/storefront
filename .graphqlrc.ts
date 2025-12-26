@@ -6,7 +6,7 @@ loadEnvConfig(process.cwd());
 let schemaUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 
 if (process.env.GITHUB_ACTION === "generate-schema-from-file") {
-	schemaUrl = "schema.graphql";
+	schemaUrl = "schema-from-saleor.graphql";
 }
 
 if (!schemaUrl) {
